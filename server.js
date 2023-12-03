@@ -10,13 +10,16 @@
 *  Student ID: 156175200
 *  Date: 26/11/2023
 *
-*  Published URL: 
+*  Published URL: https://easy-jade-bee-vest.cyclic.app/
 *
 ********************************************************************************/
 
 
 const authData = require("./modules/auth-service.js");
 const clientSessions = require("client-sessions");
+const { MongoClient } = require('mongodb');
+const uri = process.env.MONGO_CONNECTION_STRING;
+const client = new MongoClient(uri);
 
 const legoData = require("./modules/legoSets");
 const path = require("path");
@@ -204,12 +207,14 @@ app.use((req, res, next) => {
 // legoData.initialize().then(()=>{
 //   app.listen(HTTP_PORT, () => { console.log(`server listening on: ${HTTP_PORT}`) });
 // });
-legoData.initialize()
-.then(authData.initialize)
-.then(function(){
-    app.listen(HTTP_PORT, function(){
-        console.log(`app listening on:  ${HTTP_PORT}`);
-    });
-}).catch(function(err){
-    console.log(`unable to start server: ${err}`);
+client.connect(err => {
+  legoData.initialize()
+  .then(authData.initialize)
+  .then(function(){
+      app.listen(HTTP_PORT, function(){
+          console.log(`app listening on:  ${HTTP_PORT}`);
+      });
+  }).catch(function(err){
+      console.log(`unable to start server: ${err}`);
+  });
 });
