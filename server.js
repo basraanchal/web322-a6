@@ -17,9 +17,6 @@
 
 const authData = require("./modules/auth-service.js");
 const clientSessions = require("client-sessions");
-const { MongoClient } = require('mongodb');
-const uri = process.env.MONGO_CONNECTION_STRING;
-const client = new MongoClient(uri);
 
 const legoData = require("./modules/legoSets");
 const path = require("path");
@@ -207,7 +204,6 @@ app.use((req, res, next) => {
 // legoData.initialize().then(()=>{
 //   app.listen(HTTP_PORT, () => { console.log(`server listening on: ${HTTP_PORT}`) });
 // });
-client.connect(err => {
   legoData.initialize()
   .then(authData.initialize)
   .then(function(){
@@ -217,4 +213,3 @@ client.connect(err => {
   }).catch(function(err){
       console.log(`unable to start server: ${err}`);
   });
-});
